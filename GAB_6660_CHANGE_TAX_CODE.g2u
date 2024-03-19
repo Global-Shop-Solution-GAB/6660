@@ -1,0 +1,281 @@
+﻿Program.Sub.ScreenSU.Start
+Gui.frmTax..Create(BaseForm)
+Gui.frmTax..Caption("Change Tax Code")
+Gui.frmTax..Size(930,691)
+Gui.frmTax..MinX(0)
+Gui.frmTax..MinY(0)
+Gui.frmTax..Position(0,0)
+Gui.frmTax..AlwaysOnTop(False)
+Gui.frmTax..FontName("Tahoma")
+Gui.frmTax..FontSize(8.25)
+Gui.frmTax..ControlBox(True)
+Gui.frmTax..MaxButton(True)
+Gui.frmTax..MinButton(True)
+Gui.frmTax..MousePointer(0)
+Gui.frmTax..Moveable(True)
+Gui.frmTax..Sizeable(True)
+Gui.frmTax..ShowInTaskBar(True)
+Gui.frmTax..TitleBar(True)
+Gui.frmTax..Event(UnLoad,Unload)
+Gui.frmTax.cmdProcess.Create(Button)
+Gui.frmTax.cmdProcess.Enabled(True)
+Gui.frmTax.cmdProcess.Visible(True)
+Gui.frmTax.cmdProcess.Zorder(0)
+Gui.frmTax.cmdProcess.Size(75,23)
+Gui.frmTax.cmdProcess.Position(297,31)
+Gui.frmTax.cmdProcess.Caption("Process")
+Gui.frmTax.cmdProcess.FontName("Tahoma")
+Gui.frmTax.cmdProcess.FontSize(8.25)
+Gui.frmTax.cmdProcess.Event(Click,cmdProcess_Click)
+Gui.frmTax.tabTax.Create(Tab)
+Gui.frmTax.tabTax.Enabled(True)
+Gui.frmTax.tabTax.Visible(True)
+Gui.frmTax.tabTax.Zorder(0)
+Gui.frmTax.tabTax.Size(908,563)
+Gui.frmTax.tabTax.Position(10,72)
+Gui.frmTax.tabTax.FontName("Tahoma")
+Gui.frmTax.tabTax.FontSize(8.25)
+Gui.frmTax.tabTax.Tabs(2)
+Gui.frmTax.tabTax.SetTab(0)
+Gui.frmTax.tabTax.Caption("VENDOR")
+Gui.frmTax.tabTax.SetTab(1)
+Gui.frmTax.tabTax.Caption("CUSTOMER")
+Gui.frmTax.GsGCCustomer.Create(GsGridControl)
+Gui.frmTax.GsGCCustomer.Enabled(True)
+Gui.frmTax.GsGCCustomer.Visible(True)
+Gui.frmTax.GsGCCustomer.Zorder(0)
+Gui.frmTax.GsGCCustomer.Size(885,521)
+Gui.frmTax.GsGCCustomer.Position(10,8)
+Gui.frmTax.GsGCCustomer.Parent("tabTax",1)
+Gui.frmTax.GsGCCustomer.Event(RowCellClick,GSGCCustomer_RowCellClick)
+Gui.frmTax.GsGCVendor.Create(GsGridControl)
+Gui.frmTax.GsGCVendor.Enabled(True)
+Gui.frmTax.GsGCVendor.Visible(True)
+Gui.frmTax.GsGCVendor.Zorder(0)
+Gui.frmTax.GsGCVendor.Size(885,521)
+Gui.frmTax.GsGCVendor.Position(11,6)
+Gui.frmTax.GsGCVendor.Parent("tabTax",0)
+Gui.frmTax.GsGCVendor.Event(RowCellClick,GSGCVendor_RowCellClick)
+Gui.frmTax.lbl1.Create(Label,"Select a Tax code",True,85,13,0,13,4,True,0,"Tahoma",8.25,,0)
+Gui.frmTax.lbl1.BorderStyle(0)
+Gui.frmTax.lbl2.Create(Label,"Change to",True,50,13,0,145,22,True,0,"Tahoma",8.25,,0)
+Gui.frmTax.lbl2.BorderStyle(0)
+Gui.frmTax.ddlFrom.Create(DropDownList)
+Gui.frmTax.ddlFrom.Enabled(True)
+Gui.frmTax.ddlFrom.Visible(True)
+Gui.frmTax.ddlFrom.Zorder(0)
+Gui.frmTax.ddlFrom.Size(100,20)
+Gui.frmTax.ddlFrom.Position(12,37)
+Gui.frmTax.ddlFrom.FontName("Tahoma")
+Gui.frmTax.ddlFrom.FontSize(8.25)
+Gui.frmTax.ddlFrom.Event(SelectedIndexChanged,ddlFrom_Click)
+Gui.frmTax.ddlTo.Create(DropDownList)
+Gui.frmTax.ddlTo.Enabled(True)
+Gui.frmTax.ddlTo.Visible(True)
+Gui.frmTax.ddlTo.Zorder(0)
+Gui.frmTax.ddlTo.Size(100,20)
+Gui.frmTax.ddlTo.Position(144,37)
+Gui.frmTax.ddlTo.FontName("Tahoma")
+Gui.frmTax.ddlTo.FontSize(8.25)
+Gui.frmTax.lbl3.Create(Label,"From",True,24,13,0,14,21,True,0,"Tahoma",8.25,,0)
+Gui.frmTax.lbl3.BorderStyle(0)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+V.Global.iVAT.Declare
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+'Function.Intrinsic.UI.UsePixels ' Allows you to use Pixels instead of Twips throughout
+
+'F.ODBC.Connection!conx.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+F.ODBC.Connection!conx.OpenCompanyConnection(500)
+
+'Setup all tax codes
+F.Data.Dictionary.CreateFromSQL("dicTax","conx","select Zone+Auth as TaxCode, Zone+Auth as TaxCode from v_ar_tax_tables union all select Grp_Cd as TaxCode, Grp_Cd as TaxCode from v_tax_group_rate order by TaxCode ;")
+Gui.frmTax.ddlFrom.AddItems("Dictionary","dicTax")
+Gui.frmTax.ddlTo.AddItems("Dictionary","dicTax")
+F.Data.Dictionary.Close("dicTax")
+
+Gui.FrmTax.tabTax.SetTab(0)
+
+Gui.frmTax..Show
+
+Program.Sub.Main.End
+
+Program.Sub.ddlFrom_Click.Start
+V.Local.dExchDate.Declare(Date)
+V.Local.sCaption.Declare
+V.Local.sSQL.Declare
+V.Local.sFrom.Declare
+
+V.Local.sFrom.Set(V.Screen.frmTax!ddlFrom.Text)
+
+F.Intrinsic.Control.If(V.DataTable.dtVendor.Exists,=,True)
+	F.Data.DataTable.Close("dtVendor")
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.If(V.DataTable.dtCustomer.Exists,=,True)
+	F.Data.DataTable.Close("dtCustomer")
+F.Intrinsic.Control.EndIf
+
+F.ODBC.Connection!conx.OpenLocalRecordsetRO("rstCO","Select * From V_OP_Header where ID = '400078'")
+F.Intrinsic.Control.If(V.ODBC.conx!rstCO.FieldVal!F_Boolean,=,1)
+V.Global.iVAT.Set(1)
+	F.Intrinsic.String.Build("select Cast(1 as BIT) as Checklist, VA.Vendor_ID as Vendor, VM.Name_Vendor from V_VAT_VEND_TAX VA Left Join V_Vendor_Master VM On VA.Vendor_ID = VM.Vendor Where VA.DFLT_TAX_GRP_CODE = '{0}'",V.Local.sFrom.Trim, V.Local.sSQL)	
+F.Intrinsic.Control.Else
+V.Global.iVAT.Set(0)
+	F.Intrinsic.String.Build("select Cast(1 as BIT) as Checklist, VA.Vendor, VM.Name_Vendor from V_VENDOR_ADDL VA Left Join V_Vendor_Master VM On VA.Vendor = VM.Vendor Where VA.Tax_Code = '{0}'",V.Local.sFrom.Trim, V.Local.sSQL)
+F.Intrinsic.Control.EndIf
+F.ODBC.conx!rstCO.Close
+
+F.Data.DataTable.CreateFromSQL("dtVendor","conx",V.Local.sSQL,True)
+
+'F.Intrinsic.String.Build("select Cast(1 as BIT) as Checklist, CTA.Cust as Customer, CM.Name_Customer from V_Customer_Tax_Auth CTA Left Join V_Customer_Master CM On CTA.Cust = CM.Customer Where CTA.Tax_Zone+CTA.TAX_Auth = '{0}'",V.Local.sFrom.Trim, V.Local.sSQL)
+F.Intrinsic.String.Build("select Cast(1 as BIT) as Checklist, Cust as Customer, '' as Ship_Seq, '' as Name_Customer, '' as Ship_Tax_State, '' as Ship_Tax_Zone_1 from V_Customer_Tax_Auth Where Tax_Zone+TAX_Auth = '{0}' union all select Cast (1 as BIT), Customer, Ship_Seq, '' as Name_Customer, Ship_Tax_State, Ship_Tax_Zone_1 from V_OE_Multi_Ship Where (If(Ship_Tax_Zone_1='',Ship_Tax_State,Ship_Tax_Zone_1))+Ship_Tax_1 = '{0}'",V.Local.sFrom.Trim, V.Local.sSQL)
+F.Data.DataTable.CreateFromSQL("dtCustomer","conx",V.Local.sSQL,True)
+
+F.Data.Dictionary.CreateFromSQL("dic","conx","select Customer, Name_Customer from V_Customer_Master")
+F.Data.Dictionary.SetDefaultReturn("dic","")
+F.Data.DataTable.FillFromDictionary("dtCustomer","dic","Customer","Name_Customer")
+F.Data.Dictionary.Close("dic")
+
+'Vendor
+Gui.frmTax.GsGCVendor.AddGridviewFromDatatable("gvVendor","dtVendor")
+Gui.frmTax.GsGCVendor.MainView("gvVendor")
+
+Gui.frmTax.GsGCVendor.SetColumnProperty("gvVendor","Vendor","HeaderHAlignment","Center")
+Gui.frmTax.GsGCVendor.SetColumnProperty("gvVendor","Name_Vendor","HeaderHAlignment","Center")
+
+Gui.frmTax.GsGCVendor.SetColumnProperty("gvVendor","Checklist","Caption","")
+Gui.frmTax.GsGCVendor.SetColumnProperty("gvVendor","Name_Vendor","Caption","Vendor Name")
+
+Gui.frmTax.GsGCVendor.SetColumnProperty("gvVendor","Checklist","AllowEdit",True)
+Gui.frmTax.GsGCVendor.SetColumnProperty("gvVendor","Vendor","AllowEdit",False)
+Gui.frmTax.GsGCVendor.SetColumnProperty("gvVendor","Name_Vendor","AllowEdit",False)
+
+Gui.frmTax.GsGCVendor.SetColumnProperty("gvVendor","Checklist","ReadOnly",False)
+Gui.frmTax.GsGCVendor.SetColumnProperty("gvVendor","Vendor","ReadOnly",True)
+Gui.frmTax.GsGCVendor.SetColumnProperty("gvVendor","Name_Vendor","ReadOnly",True)
+
+'Customer
+Gui.frmTax.GsGCCustomer.AddGridviewFromDatatable("gvCustomer","dtCustomer")
+Gui.frmTax.GsGCCustomer.MainView("gvCustomer")
+
+Gui.frmTax.GsGCCustomer.SetColumnProperty("gvCustomer","Ship_Tax_State","Visible",False)
+Gui.frmTax.GsGCCustomer.SetColumnProperty("gvCustomer","Ship_Tax_Zone_1","Visible",False)
+
+Gui.frmTax.GsGCCustomer.SetColumnProperty("gvCustomer","Customer","HeaderHAlignment","Center")
+Gui.frmTax.GsGCCustomer.SetColumnProperty("gvCustomer","Name_Customer","HeaderHAlignment","Center")
+
+Gui.frmTax.GsGCCustomer.SetColumnProperty("gvCustomer","Checklist","Caption","")
+Gui.frmTax.GsGCCustomer.SetColumnProperty("gvCustomer","Name_Customer","Caption","Customer Name")
+Gui.frmTax.GsGCCustomer.SetColumnProperty("gvCustomer","Ship_Seq","Caption","Ship ID")
+
+Gui.frmTax.GsGCCustomer.SetColumnProperty("gvCustomer","Checklist","AllowEdit",True)
+Gui.frmTax.GsGCCustomer.SetColumnProperty("gvCustomer","Customer","AllowEdit",False)
+Gui.frmTax.GsGCCustomer.SetColumnProperty("gvCustomer","Ship_Seq","AllowEdit",False)
+Gui.frmTax.GsGCCustomer.SetColumnProperty("gvCustomer","Name_Customer","AllowEdit",False)
+
+Gui.frmTax.GsGCCustomer.SetColumnProperty("gvCustomer","Checklist","ReadOnly",False)
+Gui.frmTax.GsGCCustomer.SetColumnProperty("gvCustomer","Customer","ReadOnly",True)
+Gui.frmTax.GsGCCustomer.SetColumnProperty("gvCustomer","Ship_Seq","ReadOnly",True)
+Gui.frmTax.GsGCCustomer.SetColumnProperty("gvCustomer","Name_Customer","ReadOnly",True)
+
+Program.Sub.ddlFrom_Click.End
+
+Program.Sub.Unload.Start
+'F.Data.DataTable.Close("dtVendor")
+'F.Data.DataTable.Close("dtCustomer")
+F.ODBC.Connection!conx.Close
+F.Intrinsic.Control.End
+
+Program.Sub.Unload.End
+
+Program.Sub.GSGCVendor_RowCellClick.Start
+V.Local.bType.Declare
+
+F.Intrinsic.Control.If(V.Args.Column,=,"Checklist")
+	Gui.frmTax.GsGCVendor.GetCellValueByColumnName("gvVendor","Checklist",V.Args.RowIndex,V.Local.bType)
+	F.Intrinsic.Control.If(V.Local.bType,=,True)
+		F.Data.DataTable.SetValue("dtVendor",V.Args.RowIndex,"Checklist",False)
+	F.Intrinsic.Control.Else
+		F.Data.DataTable.SetValue("dtVendor",V.Args.RowIndex,"Checklist",True)
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndIf
+
+Program.Sub.GSGCVendor_RowCellClick.End
+
+Program.Sub.GSGCCustomer_RowCellClick.Start
+V.Local.bType.Declare
+
+F.Intrinsic.Control.If(V.Args.Column,=,"Checklist")
+	Gui.frmTax.GsGCCustomer.GetCellValueByColumnName("gvCustomer","Checklist",V.Args.RowIndex,V.Local.bType)
+	F.Intrinsic.Control.If(V.Local.bType,=,True)
+		F.Data.DataTable.SetValue("dtCustomer",V.Args.RowIndex,"Checklist",False)
+	F.Intrinsic.Control.Else
+		F.Data.DataTable.SetValue("dtCustomer",V.Args.RowIndex,"Checklist",True)
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndIf
+
+Program.Sub.GSGCCustomer_RowCellClick.End
+
+Program.Sub.cmdProcess_Click.Start
+V.Local.i1.Declare
+V.Local.sTo.Declare
+V.Local.sFrom.Declare
+v.Local.sZoneTo.Declare
+V.Local.sAuthTo.Declare
+v.Local.sZoneFrom.Declare
+V.Local.sAuthFrom.Declare
+V.Local.sSQL.Declare
+
+V.Local.sTo.Set(V.Screen.frmTax!ddlTo.Text)
+f.Intrinsic.String.Left(v.Local.sTo,2,v.Local.sZoneTo)
+F.Intrinsic.String.Mid(V.Local.sTo,3,3,V.Local.sAuthTo)
+
+V.Local.sFrom.Set(V.Screen.frmTax!ddlFrom.Text)
+f.Intrinsic.String.Left(v.Local.sFrom,2,v.Local.sZoneFrom)
+F.Intrinsic.String.Mid(V.Local.sFrom,3,3,V.Local.sAuthFrom)
+
+F.Intrinsic.Control.If(V.Global.iVAT,=,0)
+	F.Intrinsic.Control.For(V.Local.i1,0,V.DataTable.dtVendor.RowCount--,1)
+		F.Intrinsic.Control.If(V.DataTable.dtVendor(V.Local.i1).Checklist!FieldVal,=,True)
+			F.Intrinsic.String.Build("Update VENDOR_ADDL Set Tax_Code = '{0}' where Vendor = '{1}' and Tax_Code = '{2}';", V.Local.sTo.Trim, V.DataTable.dtVendor(V.Local.i1).Vendor!FieldVal, V.Local.sFrom.Trim, V.Local.sSQL)
+			F.ODBC.Connection!conx.Execute(V.Local.sSQL)
+		F.Intrinsic.Control.EndIf
+	F.Intrinsic.Control.Next(V.Local.i1)
+F.Intrinsic.Control.Else
+	F.Intrinsic.Control.For(V.Local.i1,0,V.DataTable.dtVendor.RowCount--,1)
+		F.Intrinsic.Control.If(V.DataTable.dtVendor(V.Local.i1).Checklist!FieldVal,=,True)
+			F.Intrinsic.String.Build("Update VAT_VEND_TAX Set DFLT_TAX_GRP_CODE = '{0}' where Vendor_ID = '{1}' and DFLT_TAX_GRP_CODE = '{2}';", V.Local.sTo.Trim, V.DataTable.dtVendor(V.Local.i1).Vendor!FieldVal, V.Local.sFrom.Trim, V.Local.sSQL)
+			F.ODBC.Connection!conx.Execute(V.Local.sSQL)
+		F.Intrinsic.Control.EndIf
+	F.Intrinsic.Control.Next(V.Local.i1)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.For(V.Local.i1,0,V.DataTable.dtCustomer.RowCount--,1)
+	F.Intrinsic.Control.If(V.DataTable.dtCustomer(V.Local.i1).Checklist!FieldVal,=,True)
+		F.Intrinsic.Control.If(V.DataTable.dtCustomer(V.Local.i1).Ship_Seq!FieldValTrim,=,"")
+			F.Intrinsic.String.Build("Update CUSTOMER_TAX_AUTH Set Tax_Zone = '{0}', Tax_Auth = '{1}' where Cust = '{2}' and Tax_Zone = '{3}' and Tax_Auth = '{4}';", V.Local.sZoneTo.Trim, V.Local.sAuthTo.Trim, V.DataTable.dtCustomer(V.Local.i1).Customer!FieldValTrim, V.Local.sZoneFrom.Trim, V.Local.sAuthFrom.Trim, V.Local.sSQL)
+			F.ODBC.Connection!conx.Execute(V.Local.sSQL)
+		F.Intrinsic.Control.Else
+			F.Intrinsic.Control.If(V.DataTable.dtCustomer(V.Local.i1).Ship_Tax_Zone_1!FieldValTrim,<>,"")
+				F.Intrinsic.String.Build("Update OE_Multi_Ship Set Ship_Tax_Zone_1 = '{0}', Ship_Tax_1 = '{1}' where Customer = '{2}' and Ship_Tax_Zone_1 = '{3}' and Ship_Tax_1 = '{4}' and ship_seq = '{5}';", V.Local.sZoneTo.Trim, V.Local.sAuthTo.Trim, V.DataTable.dtCustomer(V.Local.i1).Customer!FieldValTrim, V.Local.sZoneFrom.Trim, V.Local.sAuthFrom.Trim, V.DataTable.dtCustomer(V.Local.i1).Ship_Seq!FieldValTrim, V.Local.sSQL)
+			f.Intrinsic.Control.Else
+				F.Intrinsic.String.Build("Update OE_Multi_Ship Set Ship_Tax_State = '{0}', Ship_Tax_1 = '{1}' where Customer = '{2}' and Ship_Tax_State = '{3}' and Ship_Tax_1 = '{4}' and ship_seq = '{5}';", V.Local.sZoneTo.Trim, V.Local.sAuthTo.Trim, V.DataTable.dtCustomer(V.Local.i1).Customer!FieldValTrim, V.Local.sZoneFrom.Trim, V.Local.sAuthFrom.Trim, V.DataTable.dtCustomer(V.Local.i1).Ship_Seq!FieldValTrim, V.Local.sSQL)
+			f.Intrinsic.Control.EndIf	
+			F.ODBC.Connection!conx.Execute(V.Local.sSQL)
+		F.Intrinsic.Control.EndIf
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.Next(V.Local.i1)
+
+F.Intrinsic.UI.Msgbox("DONE!")
+F.Intrinsic.Control.CallSub(ddlFrom_Click)
+
+Program.Sub.cmdProcess_Click.End
+
+Program.Sub.Comments.Start
+${$5$}$20.1.8375.18744$}$1
+${$6$}$dyunus$}$20221222091620032$}$xZ6SHi8g7O0Qsxe6AiO2NH3PnOKQRy0T5MRm6KVC6r4EkcIMSQhGvEZX5nsl8Z6ZDRnFnNYY96Q=
+Program.Sub.Comments.End
